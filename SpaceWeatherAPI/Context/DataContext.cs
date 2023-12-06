@@ -82,7 +82,7 @@ namespace SpaceWeatherAPI.Context
         private List<Moon> SeedMoons(int planetId)
         {
             Random random = new();
-            int moonCount = random.Next(1, 4); // 1 ile 3 arasında rastgele uydu sayısı
+            int moonCount = random.Next(1, 4); 
 
             List<Moon> moons = new();
 
@@ -95,7 +95,7 @@ namespace SpaceWeatherAPI.Context
                     Name = $"Ay {i}",
                     WeatherInfo = new WeatherInfo
                     {
-                        Temperature = random.Next(-150, 150), // -50 ile 50 arasında rastgele sıcaklık
+                        Temperature = random.Next(-150, 150),
                         Condition = GetRandomCondition()
                     }
                 };

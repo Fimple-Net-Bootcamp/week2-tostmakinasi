@@ -33,13 +33,14 @@ namespace SpaceWeatherAPI.Controllers
         {
             var planetsQuery = _context.Planets.AsQueryable();
 
+            //Filtreleme İşlemi
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
                 planetsQuery = planetsQuery.Where(x => x.Name.Contains(parameters.SearchTerm) ||
                 x.WeatherInfo.Condition.ToString().Contains(parameters.SearchTerm));
             }
 
-
+            //Sıralama İşlemi
             if (parameters.GetOrder().ToLower() == "desc")
             {
                 planetsQuery = (IQueryable<Planet>)planetsQuery.OrderByDescending(_context.GetSortProperty<Planet>(parameters.GetColumn()));
@@ -50,6 +51,7 @@ namespace SpaceWeatherAPI.Controllers
 
             }
 
+            //Sayfalama İşlemi
             parameters.ValidationPageParams();
 
             var planets = planetsQuery.Skip((parameters.PageNumber - 1) * parameters.PageSize).Take(parameters.PageSize).ToList();
