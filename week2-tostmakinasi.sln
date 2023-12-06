@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceWeatherAPI", "SpaceWeatherAPI\SpaceWeatherAPI.csproj", "{893BBA9B-F87F-4654-B208-AA5D210A223E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{893BBA9B-F87F-4654-B208-AA5D210A223E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{893BBA9B-F87F-4654-B208-AA5D210A223E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{893BBA9B-F87F-4654-B208-AA5D210A223E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{893BBA9B-F87F-4654-B208-AA5D210A223E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
