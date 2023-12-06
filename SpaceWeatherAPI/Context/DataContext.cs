@@ -66,7 +66,7 @@ namespace SpaceWeatherAPI.Context
                     Name = $"Gezegen {i}",
                     WeatherInfo = new WeatherInfo
                     {
-                        Temperature = random.Next(-150, 150), // -50 ile 50 arasında rastgele sıcaklık
+                        Temperature = random.Next(-150, 150),
                         Condition = GetRandomCondition()
                     },
                     Moons = SeedMoons(i)
