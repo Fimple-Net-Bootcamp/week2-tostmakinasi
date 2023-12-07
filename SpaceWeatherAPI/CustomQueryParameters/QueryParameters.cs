@@ -3,18 +3,24 @@ using System.ComponentModel;
 
 namespace SpaceWeatherAPI.CustomQueryParameters
 {
-    public class QueryParameters
+    public struct QueryParameters
     {
+        public QueryParameters()
+        {
+            SearchTerm = "";
+            PageNumber = 1;
+            PageSize = 10;
+        }
         /// <summary>
         /// Sets the search term for filtering results.
         /// **Filter On Columns:** Name, WeatherInfo.Condition
         /// </summary>
         /// <remarks>For example: "Gezegen" or "Blizzard"</remarks>
-        public string? SearchTerm { get; set; } = null;
+        public string SearchTerm { get; set; }
 
-        private string? _column = "id";
+        private string _column = "id";
 
-        private string? _order = "asc";
+        private string _order = "asc";
 
         /// <summary>
         /// Sets the sorting column and order.
@@ -53,12 +59,12 @@ namespace SpaceWeatherAPI.CustomQueryParameters
         /// <summary>
         /// Sets the page number.
         /// </summary>
-        public int PageNumber { get; set; } = 1;
+        public int PageNumber { get; set; }
 
         /// <summary>
         /// Sets the page size.
         /// </summary>
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; }
 
         public void ValidationPageParams()
         {
