@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SpaceWeatherAPI.Context;
 using SpaceWeatherAPI.CustomQueryParameters;
 using SpaceWeatherAPI.CustomResponses;
+using SpaceWeatherAPI.Extensions;
 using SpaceWeatherAPI.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Linq;
@@ -34,27 +35,15 @@ namespace SpaceWeatherAPI.Controllers
             var planetsQuery = _context.Planets.AsQueryable();
 
             //Filtreleme İşlemi
-            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
-            {
-                planetsQuery = planetsQuery.Where(x => x.Name.Contains(parameters.SearchTerm) ||
-                x.WeatherInfo.Condition.ToString().Contains(parameters.SearchTerm));
-            }
+            planetsQuery.ApplySearchFilterWithExtension(parameters);
 
             //Sıralama İşlemi
-            if (parameters.GetOrder().ToLower() == "desc")
-            {
-                planetsQuery = (IQueryable<Planet>)planetsQuery.OrderByDescending(_context.GetSortProperty<Planet>(parameters.GetColumn()));
-            }
-            else
-            {
-                planetsQuery = (IQueryable<Planet>)planetsQuery.OrderBy(_context.GetSortProperty<Planet>(parameters.GetColumn()));
-
-            }
+            planetsQuery.ApplyOrderingWithExtension(parameters);
 
             //Sayfalama İşlemi
-            parameters.ValidationPageParams();
+            planetsQuery.ApplyPaginationWithExtension(parameters);
 
-            var planets = planetsQuery.Skip((parameters.PageNumber - 1) * parameters.PageSize).Take(parameters.PageSize).ToList();
+            var planets = planetsQuery.ToList();
 
             if(planets == null || planets.Count == 0)
                 return NotFound();
@@ -104,29 +93,14 @@ namespace SpaceWeatherAPI.Controllers
 
             var moonsQuery = planet.Moons.AsQueryable();
 
-            //Filtreleme işlemi
-            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
-            {
-                moonsQuery = moonsQuery.Where(x => x.Name.Contains(parameters.SearchTerm) ||
-                x.WeatherInfo.Condition.ToString().Contains(parameters.SearchTerm));
-            }
+            //Filtreleme İşlemi
+            moonsQuery.ApplySearchFilterWithExtension(parameters);
 
             //Sıralama İşlemi
-            if (parameters.GetOrder().ToLower() == "desc")
-            {
-                moonsQuery = (IQueryable<Moon>)moonsQuery.OrderByDescending(_context.GetSortProperty<Moon>(parameters.GetColumn()));
-            }
-            else
-            {
-                moonsQuery = (IQueryable<Moon>)moonsQuery.OrderBy(_context.GetSortProperty<Moon>(parameters.GetColumn()));
+            moonsQuery.ApplyOrderingWithExtension(parameters);
 
-            }
-
-            //Page İşlemi
-            parameters.ValidationPageParams();
-
-            moonsQuery = moonsQuery.Skip((parameters.PageNumber - 1) * parameters.PageSize)
-                                   .Take(parameters.PageSize);
+            //Sayfalama İşlemi
+            moonsQuery.ApplyPaginationWithExtension(parameters);
 
             var moons = moonsQuery.ToList();
 
