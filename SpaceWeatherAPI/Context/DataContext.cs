@@ -14,23 +14,6 @@ namespace SpaceWeatherAPI.Context
         {
             SeedPlanets();
         }
-
-        /// <summary>
-        /// Gets the sorting property based on the specified sorting column for a generic type.
-        /// </summary>
-        /// <typeparam name="T">Type of the object to sort.</typeparam>
-        /// <param name="sortingColumn">Column to use for sorting.</param>
-        /// <returns>Expression defining the property to be used for sorting.</returns>
-        public Expression<Func<T, object>> GetSortProperty<T>(string? sortingColumn) where T : BaseModel
-        {
-            return sortingColumn?.ToLower() switch
-            {
-                "name" => model => model.Name,
-                "temperature" => model => ((BaseModel)model).WeatherInfo.Temperature,
-                _ => model => model.Id
-            };
-        }
-
         /// <summary>
         /// Gets a new unique identifier for a planet based on the existing planets' identifiers.
         /// </summary>
