@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SpaceWeatherAPI.Context;
 using SpaceWeatherAPI.CustomQueryParameters;
 using SpaceWeatherAPI.CustomResponses;
 using SpaceWeatherAPI.Extensions;
 using SpaceWeatherAPI.Models;
-using Swashbuckle.AspNetCore.Annotations;
-using System.Linq;
-using System.Numerics;
 
 namespace SpaceWeatherAPI.Controllers
 {
@@ -32,16 +28,16 @@ namespace SpaceWeatherAPI.Controllers
         [HttpGet("planets")]
         public IActionResult GetAllPlanets([FromQuery] QueryParameters parameters)
         {
-            var planetsQuery = _context.Planets.AsQueryable();
+            var planetsQuery = _context.GetPlanetsAsIQueryable();
 
             //Filtreleme İşlemi
-            planetsQuery.ApplySearchFilterWithExtension(parameters);
+            planetsQuery = planetsQuery.ApplySearchFilterWithExtension<Planet>(parameters);
 
             //Sıralama İşlemi
-            planetsQuery.ApplyOrderingWithExtension(parameters);
+            planetsQuery = planetsQuery.ApplyOrderingWithExtension<Planet>(parameters);
 
             //Sayfalama İşlemi
-            planetsQuery.ApplyPaginationWithExtension(parameters);
+            planetsQuery = planetsQuery.ApplyPaginationWithExtension(parameters);
 
             var planets = planetsQuery.ToList();
 
@@ -50,7 +46,7 @@ namespace SpaceWeatherAPI.Controllers
 
             var result = new PagedResponse<Planet>(planets, parameters.PageNumber, parameters.PageSize)
             {
-                TotalRecords = _context.Planets.Count
+                TotalRecords = planets.Count
             };
             result.TotalPages = (int)Math.Ceiling((double)result.TotalRecords / parameters.PageSize);
 
@@ -94,13 +90,13 @@ namespace SpaceWeatherAPI.Controllers
             var moonsQuery = planet.Moons.AsQueryable();
 
             //Filtreleme İşlemi
-            moonsQuery.ApplySearchFilterWithExtension(parameters);
+            moonsQuery = moonsQuery.ApplySearchFilterWithExtension(parameters);
 
             //Sıralama İşlemi
-            moonsQuery.ApplyOrderingWithExtension(parameters);
+            moonsQuery = moonsQuery.ApplyOrderingWithExtension(parameters);
 
             //Sayfalama İşlemi
-            moonsQuery.ApplyPaginationWithExtension(parameters);
+            moonsQuery = moonsQuery.ApplyPaginationWithExtension(parameters);
 
             var moons = moonsQuery.ToList();
 
@@ -109,10 +105,10 @@ namespace SpaceWeatherAPI.Controllers
                 return NotFound();
             }
 
-            var result = new PagedResponse<Moon>(moons,parameters.PageNumber, parameters.PageSize)
+            var result = new PagedResponse<Moon>(moons, parameters.PageNumber, parameters.PageSize)
             {
-                TotalRecords = planet.Moons.Count,
-                TotalPages = (int)Math.Ceiling((double)planet.Moons.Count / parameters.PageSize),
+                TotalRecords = moons.Count,
+                TotalPages = (int)Math.Ceiling((double)moons.Count / parameters.PageSize),
                 Data = moons
             };
 

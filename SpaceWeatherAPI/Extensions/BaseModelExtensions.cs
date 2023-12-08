@@ -1,5 +1,6 @@
 ﻿using SpaceWeatherAPI.CustomQueryParameters;
 using SpaceWeatherAPI.Models;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace SpaceWeatherAPI.Extensions
@@ -11,11 +12,11 @@ namespace SpaceWeatherAPI.Extensions
         /// </summary>
         /// <param name="query">The queryable object.</param>
         /// <param name="parameters">The pagination parameters.</param>
-        public static void ApplyPaginationWithExtension(this IQueryable<BaseModel> query, QueryParameters parameters)
+        public static IQueryable<T> ApplyPaginationWithExtension<T>(this IQueryable<T> query, QueryParameters parameters) where T : BaseModel
         {
-            parameters.ValidationPageParams();
 
             query = query.Skip((parameters.PageNumber - 1) * parameters.PageSize).Take(parameters.PageSize);
+            return query;
 
         }
 
@@ -24,13 +25,15 @@ namespace SpaceWeatherAPI.Extensions
         /// </summary>
         /// <param name="query">The queryable object.</param>
         /// <param name="parameters">The search parameters.</param>
-        public static void ApplySearchFilterWithExtension(this IQueryable<BaseModel> query, QueryParameters parameters)
+        public static IQueryable<T> ApplySearchFilterWithExtension<T>(this IQueryable<T> query, QueryParameters parameters) where T : BaseModel 
         {
+            
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                query = query.Where(x => x.Name.Contains(parameters.SearchTerm) ||
+                query =  query.Where(x => x.Name.Contains(parameters.SearchTerm) ||
                 x.WeatherInfo.Condition.ToString().Contains(parameters.SearchTerm));
             }
+            return query;
         }
 
         /// <summary>
@@ -38,17 +41,30 @@ namespace SpaceWeatherAPI.Extensions
         /// </summary>
         /// <param name="query">The queryable object.</param>
         /// <param name="parameters">The ordering parameters.</param>
-        public static void ApplyOrderingWithExtension(this IQueryable<BaseModel> query, QueryParameters parameters)
+        public static IQueryable<T> ApplyOrderingWithExtension<T>(this IQueryable<T> query, QueryParameters parameters) where T : BaseModel
         {
-            if (parameters.GetOrder().ToLower() == "desc")
+            if (!string.IsNullOrWhiteSpace(parameters.Sorting))
             {
-                query = query.OrderByDescending(GetSortProperty<BaseModel>(parameters.GetColumn()));
+                var sorting = parameters.Sorting.Split(','); // Split Columns
+                
+                foreach (var column in sorting)
+                {
+                    var parameter = column.Split('_');//Split Column _ Order
+                    if (parameter.Count() > 1 && parameter[1] == "desc")
+                    {
+                        query = query.OrderByDescending(GetSortProperty<T>(parameter[0]));
+                    }
+                    else
+                    {
+                        query = query.OrderBy(GetSortProperty<T>(parameter[0]));
+
+                    }
+                }
             }
             else
-            {
-                query = query.OrderBy(GetSortProperty<BaseModel>(parameters.GetColumn()));
+                query.OrderBy(x => x.Id);
 
-            }
+            return query;
         }
 
         /// <summary>

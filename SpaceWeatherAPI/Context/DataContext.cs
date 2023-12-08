@@ -8,10 +8,11 @@ namespace SpaceWeatherAPI.Context
 {
     public class DataContext
     {
-        public readonly List<Planet> Planets = new();
+        public List<Planet> Planets;
 
         public DataContext()
         {
+            Planets = new List<Planet>();
             SeedPlanets();
         }
         /// <summary>
@@ -36,6 +37,10 @@ namespace SpaceWeatherAPI.Context
             return planet.Moons.OrderBy(x => x.Id).Last().Id + 1;
         }
 
+        public IQueryable<Planet> GetPlanetsAsIQueryable()
+        {
+            return Planets.AsQueryable();
+        }
 
         private void SeedPlanets()
         {
