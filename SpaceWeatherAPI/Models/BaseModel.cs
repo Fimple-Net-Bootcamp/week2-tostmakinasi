@@ -1,4 +1,6 @@
-﻿namespace SpaceWeatherAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace SpaceWeatherAPI.Models
 {
     public abstract class BaseModel
     {

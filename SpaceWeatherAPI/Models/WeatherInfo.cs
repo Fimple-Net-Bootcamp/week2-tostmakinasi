@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace SpaceWeatherAPI.Models
 {
@@ -8,8 +9,8 @@ namespace SpaceWeatherAPI.Models
         public WeatherCondition Condition { get; set; }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     [Flags]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum WeatherCondition
     {
         Clear = 1,
@@ -22,4 +23,5 @@ namespace SpaceWeatherAPI.Models
         Sandstorm = Dusty | Stormy,
         RainWithSnow = Rainy | Snowy,
     }
+
 }
