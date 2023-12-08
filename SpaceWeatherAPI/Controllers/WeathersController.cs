@@ -65,7 +65,7 @@ namespace SpaceWeatherAPI.Controllers
             var planet = _context.Planets.FirstOrDefault(x => x.Id == id);
 
             if (planet == null)
-                return NotFound();
+                return NotFound("Planet not found.");
 
             return Ok(planet);
         }
@@ -122,15 +122,15 @@ namespace SpaceWeatherAPI.Controllers
         /// <param name="id">The ID of the moon to retrieve.</param>
         /// <returns>The moon with the specified ID.</returns>
         //GET /api/v1/Weathers/planets/1/moons/1
-        [HttpGet("planets/{planetId}/moons/{id}")]
-        public IActionResult GetMoonById(int planetId, int id)
+        [HttpGet("planets/{planetId}/moons/{moonId}")]
+        public IActionResult GetMoonById(int planetId, int moonId)
         {
             var planet = _context.Planets.FirstOrDefault(x => x.Id == planetId);
 
             if (planet == null)
                 return NotFound("Planet not found.");
 
-            var moon = planet.Moons.FirstOrDefault(x => x.Id == id);
+            var moon = planet.Moons.FirstOrDefault(x => x.Id == moonId);
 
             if (moon == null)
                 return NotFound("Moon not found.");
@@ -186,11 +186,11 @@ namespace SpaceWeatherAPI.Controllers
         /// <param name="moon">The moon object to add.</param>
         /// <returns>The added moon with its details.</returns>
         //POST api/v1/Weathers/planets/1/moons
-        [HttpPost("planets/{id}/moons")]
-        public IActionResult AddMoonToPlanet(int id, [FromBody] Moon moon) 
+        [HttpPost("planets/{planetId}/moons")]
+        public IActionResult AddMoonToPlanet(int planetId, [FromBody] Moon moon) 
         {
 
-            var planet = _context.Planets.FirstOrDefault(x => x.Id == id);
+            var planet = _context.Planets.FirstOrDefault(x => x.Id == planetId);
 
             if (!ModelState.IsValid || planet == null)
             {
@@ -203,7 +203,7 @@ namespace SpaceWeatherAPI.Controllers
                 Id = _context.GetNewMoonId(planet),
                 Name = moon.Name,
                 WeatherInfo = moon.WeatherInfo,
-                PlanetId = id
+                PlanetId = planetId
             };
 
             planet.Moons.Add(newMoon);

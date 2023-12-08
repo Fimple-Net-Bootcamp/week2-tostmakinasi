@@ -30,8 +30,8 @@ namespace SpaceWeatherAPI.Extensions
             
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                query =  query.Where(x => x.Name.Contains(parameters.SearchTerm) ||
-                x.WeatherInfo.Condition.ToString().Contains(parameters.SearchTerm));
+                query =  query.Where(x => x.Name.ToLower().Contains(parameters.SearchTerm.ToLower()) ||
+                x.WeatherInfo.Condition.ToString().ToLower().Contains(parameters.SearchTerm.ToLower()));
             }
             return query;
         }
